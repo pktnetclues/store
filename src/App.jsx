@@ -7,18 +7,23 @@ import NotFound from "./Components/404";
 import Home from "./Components/Home";
 import Login from "./Components/Login";
 import Register from "./Components/Register";
+import Header from "./Components/Header";
+import { UserContextProvider } from "./Context/UserContext";
 
 function App() {
   return (
-    <Router>
-      <Toaster richColors position="top-right" />
-      <Routes>
-        <Route exact path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+    <UserContextProvider>
+      <Router>
+        <Toaster richColors position="top-right" />
+        <Header />
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </UserContextProvider>
   );
 }
 

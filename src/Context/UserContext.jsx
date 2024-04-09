@@ -1,0 +1,34 @@
+import axios from "axios";
+import { createContext, useState, useEffect } from "react";
+
+export const UserContext = createContext({});
+
+export const UserContextProvider = ({ children }) => {
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getProfile = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/api/profile/user`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status == 200) {
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  return (
+    <UserContext.Provider value={{ user, setUser, getProfile }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
