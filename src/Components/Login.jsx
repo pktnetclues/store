@@ -18,6 +18,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
+      setLoading(true);
       const response = await axios.post(
         `http://localhost:4000/api/login/user`,
         {
@@ -28,21 +29,29 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
         }
       );
       if (response.status === 200) {
+        setLoading(false);
         localStorage.setItem("token", response.data.token);
         navigate("/");
         getProfile();
         toast.success("Login Success");
-      } else if (response.status === 401) {
-        console.log(response);
-        toast.error(response.message);
       }
     } catch (error) {
-      console.log(error.message);
+      setLoading(false);
+      handleError(error);
     }
+  };
+
+  const handleError = (error) => {
+    let errorMessage = "An error occurred. Please try again.";
+    if (error.response && error.response.status === 400) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    toast.error(errorMessage);
   };
 
   return (

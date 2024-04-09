@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import { Navbar, Container, Button, Image } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 import { toast } from "sonner";
 import { UserContext } from "../Context/UserContext";
@@ -9,13 +10,40 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, setUser, getProfile } = useContext(UserContext);
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setUser({});
+    navigate("/login");
+    toast.success("Logout Success");
+  };
+
   useEffect(() => {
-    getProfile();
+    checkTokenExpiration();
+    // const intervalId = setInterval(checkTokenExpiration, 20000);
+    // return () => clearInterval(intervalId);
   }, []);
 
-  const handleLogout = () => {};
+  function checkTokenExpiration() {
+    const authToken = localStorage.getItem("token");
 
-  console.log(user);
+    if (!authToken) {
+      return;
+    }
+
+    try {
+      const decodedToken = jwtDecode(authToken);
+      console.log(decodedToken.exp, Math.floor(Date.now() / 1000));
+
+      if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
+        handleLogout();
+      } else {
+        getProfile();
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      handleLogout();
+    }
+  }
 
   const authToken = localStorage.getItem("token");
   const profilePicPath = user ? user.profilePic : null;
