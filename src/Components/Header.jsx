@@ -23,7 +23,7 @@ const Header = () => {
     // return () => clearInterval(intervalId);
   }, []);
 
-  function checkTokenExpiration() {
+  const checkTokenExpiration = () => {
     const authToken = localStorage.getItem("token");
 
     if (!authToken) {
@@ -41,9 +41,8 @@ const Header = () => {
       }
     } catch (error) {
       console.error("Error decoding token:", error);
-      handleLogout();
     }
-  }
+  };
 
   const authToken = localStorage.getItem("token");
   const profilePicPath = user ? user.profilePic : null;
@@ -55,18 +54,18 @@ const Header = () => {
     <Navbar fixed="top" className="bg-body-tertiary">
       <Container>
         <Link to="/">
-          <Button variant="Link">Book Store</Button>
+          <Button variant="Link">Store</Button>
         </Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <div className="d-flex gap-4">
             {authToken ? (
               <div className="d-flex justify-content-center align-items-center gap-4">
-                <Link to="/add">
-                  <Button variant="primary">Add Book</Button>
+                <Link to="/create/product">
+                  <Button variant="primary">Add Product</Button>
                 </Link>
-                <Link to="/listBooks">
-                  <Button variant="secondary">Books</Button>
+                <Link to="/list/products">
+                  <Button variant="secondary">Products</Button>
                 </Link>
                 <Link to="/profile">
                   <Image

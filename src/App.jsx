@@ -10,6 +10,8 @@ import Register from "./Components/Register";
 import Header from "./Components/Header";
 import { UserContextProvider } from "./Context/UserContext";
 import Profile from "./Components/Profile";
+import CreateProduct from "./Components/Products/CreateProduct";
+import ListProducts from "./Components/Products/ListProducts";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/create/product" element={<CreateProduct />} />
+          <Route path="/list/products" element={<ListProducts />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

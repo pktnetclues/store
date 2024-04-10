@@ -20,74 +20,78 @@ const Profile = () => {
     : "https://via.placeholder.com/150";
 
   return (
-    <div class="container rounded bg-white mt-5 mb-5">
-      <div class="row">
-        <div class="col-md-3 border-right">
-          <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-            <img class="rounded-circle mt-5" width="150px" src={profilePic} />
-            <span class="font-weight-bold">
+    <div className="container rounded bg-white mt-5 mb-5">
+      <div className="row">
+        <div className="col-md-3 border-right">
+          <div className="d-flex flex-column align-items-center text-center p-3 py-5">
+            <img
+              className="rounded-circle mt-5"
+              width="150px"
+              src={profilePic}
+            />
+            <span className="font-weight-bold">
               {user.firstName} {user.lastName}
             </span>
-            <span class="text-black-50">{user.email}</span>
+            <span className="text-black-50">{user.email}</span>
             <span> </span>
           </div>
         </div>
-        <div class="col-md-5 border-right">
-          <div class="p-3 py-5">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-              <h4 class="text-right">Profile</h4>
+        <div className="col-md-5 border-right">
+          <div className="p-3 py-5">
+            <div className="d-flex justify-content-between align-items-center mb-3">
+              <h4 className="text-right">Profile</h4>
             </div>
-            <div class="row mt-2">
-              <div class="col-md-6">
-                <label class="labels">Name</label>
+            <div className="row mt-2">
+              <div className="col-md-6">
+                <label className="labels">Name</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={user.firstName}
                   readOnly
                 />
               </div>
-              <div class="col-md-6">
-                <label class="labels">Surname</label>
+              <div className="col-md-6">
+                <label className="labels">Surname</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={user.lastName}
                   readOnly
                 />
               </div>
             </div>
-            <div class="row mt-3">
-              <div class="col-md-12">
-                <label class="labels">Email ID</label>
+            <div className="row mt-3">
+              <div className="col-md-12">
+                <label className="labels">Email ID</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={user.email}
                   readOnly
                 />
               </div>
-              <div class="col-md-12">
-                <label class="labels">Gender</label>
+              <div className="col-md-12">
+                <label className="labels">Gender</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={user.gender}
                   readOnly
                 />
               </div>
-              <div class="col-md-12">
-                <label class="labels">Hobbies</label>
+              <div className="col-md-12">
+                <label className="labels">Hobbies</label>
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   value={user.hobbies}
                   readOnly
                 />
               </div>
             </div>
-            {/* <div class="mt-5 text-center">
-              <button class="btn btn-primary profile-button" type="button">
+            {/* <div className="mt-5 text-center">
+              <button className="btn btn-primary profile-button" type="button">
                 Edit Profile
               </button>
             </div> */}

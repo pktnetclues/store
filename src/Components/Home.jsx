@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { UserContext } from "../Context/UserContext";
+import SearchProduct from "./Products/SearchProduct";
 
 const Home = () => {
+  const { user } = useContext(UserContext);
   return (
     <div className="landing-page">
       <Container>
@@ -12,9 +15,13 @@ const Home = () => {
             <p className="lead">
               Discover amazing products for your everyday needs.
             </p>
-            <Link to="/login">
-              <Button variant="outline-primary">Login to Explore</Button>
-            </Link>
+            {user.userId ? (
+              <SearchProduct />
+            ) : (
+              <Link to="/login">
+                <Button variant="outline-primary">Login to Explore</Button>
+              </Link>
+            )}
           </Col>
         </Row>
       </Container>
