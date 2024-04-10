@@ -2,8 +2,6 @@ import React, { useContext, useEffect } from "react";
 import { Navbar, Container, Button, Image } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
-
-import { toast } from "sonner";
 import { UserContext } from "../Context/UserContext";
 
 const Header = () => {
@@ -14,13 +12,10 @@ const Header = () => {
     localStorage.removeItem("token");
     setUser({});
     navigate("/login");
-    toast.success("Logout Success");
   };
 
   useEffect(() => {
     checkTokenExpiration();
-    // const intervalId = setInterval(checkTokenExpiration, 20000);
-    // return () => clearInterval(intervalId);
   }, []);
 
   const checkTokenExpiration = () => {
@@ -36,8 +31,6 @@ const Header = () => {
 
       if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
         handleLogout();
-      } else {
-        getProfile();
       }
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -47,14 +40,19 @@ const Header = () => {
   const authToken = localStorage.getItem("token");
   const profilePicPath = user ? user.profilePic : null;
   const profilePic = profilePicPath
-    ? `http://localhost:4000/assets/${profilePicPath}`
+    ? `http://localhost:4000/assets/profilePics/${profilePicPath}`
     : ``;
 
   return (
     <Navbar fixed="top" className="bg-body-tertiary">
       <Container>
         <Link to="/">
-          <Button variant="Link">Store</Button>
+          <Image
+            src="https://dynamic.brandcrowd.com/asset/logo/230da536-f2f2-4479-8c0f-87ad3a0dc7e8/logo-search-grid-1x?logoTemplateVersion=2&v=638374669166830000&text=store"
+            alt="Logo"
+            width="50"
+            roundedCircle
+          />
         </Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
@@ -72,8 +70,7 @@ const Header = () => {
                     src={profilePic}
                     alt="Profile"
                     roundedCircle
-                    width="55"
-                    height="50"
+                    width="50"
                   />
                 </Link>
                 <Button onClick={handleLogout} variant="secondary">

@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { toast } from "sonner";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
 const CreateProduct = () => {
   const navigate = useNavigate();
@@ -8,10 +10,11 @@ const CreateProduct = () => {
     productName: "",
     productDesc: "",
     productPrice: "",
-    category: "",
+    categoryName: "",
     productImages: [],
   });
 
+  const [categories, setCategories] = useState([]);
   const authToken = localStorage.getItem("token");
 
   useEffect(() => {
@@ -20,144 +23,213 @@ const CreateProduct = () => {
     }
   }, [authToken, navigate]);
 
-  const formsendData = {
-    title: formData.title,
-    description: formData.description,
-    published_year: formData.published_year,
-    author_name: formData.author_name,
-    genre_name: formData.genre_name,
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch categories
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:4000/api/get/category",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      console.log(response.data.categories);
+      setCategories(response.data.categories);
+    } catch (error) {
+      console.error("Error fetching categories: ", error);
+    }
   };
 
-  const handleFormSubmit = (e) => {
+  //Insert product
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", `http://localhost:4000/api/addBook`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.withCredentials = true;
-    xhr.send(JSON.stringify(formsendData));
-    xhr.onload = function () {
-      if (xhr.readyState === 4) {
-        console.log(xhr);
-        if (xhr.status === 200) {
-          var json_obj = JSON.parse(xhr.responseText);
-          if (json_obj.message === "success") {
-            setFormData({
-              book_id: "",
-              title: "",
-              description: "",
-              published_year: "",
-              author_name: "",
-              genre_name: "",
-            });
-            toast.success("Book Added");
-            navigate("/listdata");
-          } else {
-            toast.error("There is something wrong");
-          }
-        } else {
-          toast.error("There is something wrong");
-          console.error(xhr.statusText);
+
+    const {
+      productName,
+      productDesc,
+      productPrice,
+      categoryName,
+      productImages,
+    } = formData;
+
+    if (
+      !productName ||
+      !productDesc ||
+      !productPrice ||
+      !categoryName ||
+      productImages.length === 0
+    ) {
+      toast.error("Please fill all the fields");
+      return;
+    }
+
+    const postData = new FormData();
+    postData.append("productName", productName);
+    postData.append("productDesc", productDesc);
+    postData.append("productPrice", productPrice);
+    postData.append("categoryName", categoryName);
+    productImages.forEach((image) => {
+      postData.append("productImages", image);
+    });
+
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/create/product",
+        postData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
         }
+      );
+      if (response.data.message === "success") {
+        setFormData({
+          productName: "",
+          productDesc: "",
+          productPrice: "",
+          categoryName: "",
+          productImages: [],
+        });
+        toast.success("Product Added");
+        navigate("/list/products");
+      } else {
+        toast.error("There is something wrong");
       }
-    };
-    xhr.onerror = function () {
+    } catch (error) {
       toast.error("There is something wrong");
-      console.error(xhr.statusText);
-    };
+      console.error(error);
+    }
+  };
+
+  //Handle category change
+  const handleCategoryChange = (e) => {
+    setFormData({ ...formData, categoryName: e.target.value });
+  };
+
+  //Handle image change
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const imagesArray = [...formData.productImages];
+    for (let i = 0; i < files.length; i++) {
+      imagesArray.push(files[i]);
+    }
+    setFormData({ ...formData, productImages: imagesArray });
+  };
+
+  const handleRemoveImage = (index, e) => {
+    e.preventDefault();
+    const updatedImages = [...formData.productImages];
+    updatedImages.splice(index, 1);
+    setFormData({ ...formData, productImages: updatedImages });
   };
 
   return (
     <div className="sign-in__wrapper">
-      <h3>Add Book</h3>
+      <h3>Add Product</h3>
       <form className="shadow p-4 bg-white rounded" onSubmit={handleFormSubmit}>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
-            Book Name
+          <label htmlFor="productName" className="form-label">
+            Product Name
           </label>
           <input
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                title: e.target.value,
-              })
+              setFormData({ ...formData, productName: e.target.value })
             }
             type="text"
             className="form-control"
-            name="book_name"
-            placeholder="Book Name"
+            id="productName"
+            placeholder="Product Name"
+            value={formData.productName}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
+          <label htmlFor="productDesc" className="form-label">
             Description
           </label>
           <textarea
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                description: e.target.value,
-              })
+              setFormData({ ...formData, productDesc: e.target.value })
             }
-            type="text"
             className="form-control"
-            name="description"
-            placeholder="description"
+            id="productDesc"
+            placeholder="Description"
+            value={formData.productDesc}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
-            published year
+          <label htmlFor="productPrice" className="form-label">
+            Price
           </label>
           <input
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                published_year: e.target.value,
-              })
+              setFormData({ ...formData, productPrice: e.target.value })
             }
             type="number"
             className="form-control"
-            name="year"
-            placeholder="2002"
+            id="productPrice"
+            placeholder="Price"
+            value={formData.productPrice}
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
-            Author Name
+          <label htmlFor="category" className="form-label">
+            Category
           </label>
-          <input
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                author_name: e.target.value,
-              })
-            }
-            type="text"
+          <select
+            onChange={handleCategoryChange}
             className="form-control"
-            name="year"
-            placeholder="Author Name"
-          />
+            id="category"
+            value={formData.categoryName}
+          >
+            <option value="">Select a category</option>
+            {categories.map((category, index) => (
+              <option key={index} value={category.categoryName}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="mb-3">
-          <label htmlFor="exampleFormControlInput1" className="form-label">
-            Genre Name
+          <label htmlFor="productImages" className="form-label">
+            Product Images
           </label>
           <input
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                genre_name: e.target.value,
-              })
-            }
-            type="text"
+            onChange={handleImageChange}
+            type="file"
             className="form-control"
-            name="year"
-            placeholder="Novel"
+            id="productImages"
+            multiple
           />
+          <div className="mt-3">
+            {formData.productImages.map((image, index) => (
+              <div
+                key={index}
+                className="d-inline-block position-relative me-3"
+              >
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Product Image ${index}`}
+                  style={{ maxWidth: "70px", maxHeight: "70px" }}
+                />
+                <button
+                  className="btn btn-sm btn-danger position-absolute top-0 end-0"
+                  onClick={(e) => handleRemoveImage(index, e)}
+                >
+                  <IoCloseCircleSharp />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="d-grid gap-2">
           <button className="btn btn-primary" type="submit">
-            Add Data
+            Add Product
           </button>
         </div>
       </form>
