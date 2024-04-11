@@ -4,6 +4,7 @@ import { FaCartPlus } from "react-icons/fa";
 import axios from "axios";
 import { Button } from "react-bootstrap";
 import { UserContext } from "../../Context/UserContext";
+import UpdateProduct from "./UpdateProduct";
 
 const ListProducts = () => {
   const { products } = useContext(UserContext);
@@ -52,9 +53,7 @@ const ListProducts = () => {
                     <h5>₹ {product.productPrice}</h5>
                   </div>
                   <div className="col-4">
-                    <Button variant="link" className="">
-                      <FaCartPlus />
-                    </Button>
+                    <UpdateProduct product={product} />
                   </div>
                 </div>
               </div>

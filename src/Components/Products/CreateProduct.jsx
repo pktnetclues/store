@@ -4,8 +4,14 @@ import axios from "axios";
 import { toast } from "sonner";
 import { IoCloseCircleSharp } from "react-icons/io5";
 
+import { useContext } from "react";
+import { UserContext } from "../../Context/UserContext";
+
 const CreateProduct = () => {
   const navigate = useNavigate();
+
+  const { fetchProducts } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     productName: "",
     productDesc: "",
@@ -38,7 +44,6 @@ const CreateProduct = () => {
           },
         }
       );
-      console.log(response.data.categories);
       setCategories(response.data.categories);
     } catch (error) {
       console.error("Error fetching categories: ", error);
@@ -48,6 +53,7 @@ const CreateProduct = () => {
   //Insert product
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const {
       productName,
@@ -57,13 +63,8 @@ const CreateProduct = () => {
       productImages,
     } = formData;
 
-    if (
-      !productName ||
-      !productDesc ||
-      !productPrice ||
-      !categoryName ||
-      productImages.length === 0
-    ) {
+    if (!productName || !productDesc || !productPrice || !categoryName) {
+      setLoading(false);
       toast.error("Please fill all the fields");
       return;
     }
@@ -98,13 +99,25 @@ const CreateProduct = () => {
         });
         toast.success("Product Added");
         navigate("/list/products");
+        fetchProducts();
+        setLoading(false);
       } else {
         toast.error("There is something wrong");
       }
     } catch (error) {
-      toast.error("There is something wrong");
-      console.error(error);
+      setLoading(false);
+      handleError(error);
     }
+  };
+
+  const handleError = (error) => {
+    let errorMessage = "An error occurred. Please try again.";
+    if (error.response && error.response.status === 400) {
+      errorMessage = error.response.data.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    toast.error(errorMessage);
   };
 
   //Handle category change
@@ -115,6 +128,8 @@ const CreateProduct = () => {
   //Handle image change
   const handleImageChange = (e) => {
     const files = e.target.files;
+
+    console.log(files);
     const imagesArray = [...formData.productImages];
     for (let i = 0; i < files.length; i++) {
       imagesArray.push(files[i]);

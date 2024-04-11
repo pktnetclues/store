@@ -63,6 +63,7 @@ const SearchProduct = () => {
                   <th>Title</th>
                   <th>Description</th>
                   <th>Launched</th>
+                  <th>Category</th>
                 </tr>
               </thead>
               <tbody>

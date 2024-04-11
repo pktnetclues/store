@@ -49,7 +49,7 @@ const Profile = () => {
               </div>
               <div className="row mt-2">
                 <div className="col-md-6">
-                  <label className="labels">Name</label>
+                  <label className="labels">FirstName</label>
                   <input
                     type="text"
                     className="form-control"
@@ -58,7 +58,7 @@ const Profile = () => {
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="labels">Surname</label>
+                  <label className="labels">LastName</label>
                   <input
                     type="text"
                     className="form-control"
