@@ -4,13 +4,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { UserContext } from "../Context/UserContext";
 
+import { toast } from "sonner";
+
 const Header = () => {
   const navigate = useNavigate();
-  const { user, setUser, getProfile } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser({});
+    toast.success("Logout Success");
     navigate("/login");
   };
 

@@ -8,7 +8,7 @@ import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { getProfile } = useContext(UserContext);
+  const { getProfile, fetchProducts } = useContext(UserContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -36,6 +36,7 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         navigate("/");
         getProfile();
+        fetchProducts();
         toast.success("Login Success");
       }
     } catch (error) {

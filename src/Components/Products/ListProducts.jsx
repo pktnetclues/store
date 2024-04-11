@@ -1,31 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { FaCartPlus } from "react-icons/fa";
 
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import { UserContext } from "../../Context/UserContext";
 
 const ListProducts = () => {
-  const [products, setProducts] = useState([]);
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:4000/api/get/products",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
-      if (response.status == 200) {
-        setProducts(response.data.products);
-      }
-    } catch (error) {}
-  };
+  const { products } = useContext(UserContext);
   return (
     <div
       className="d-flex flex-column justify-content-center align-items-center"
