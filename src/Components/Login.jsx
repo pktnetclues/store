@@ -3,27 +3,46 @@ import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { UserContext } from "../Context/UserContext";
-
 import axios from "axios";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+
+const errMess = {
+  req: "Please fill this out",
+};
+
+const validationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .label("Email")
+    .required(errMess.req)
+    .email("Invalid Email"),
+  password: yup.string().required(errMess.req),
+});
 
 const Login = () => {
   const navigate = useNavigate();
   const { getProfile, fetchProducts } = useContext(UserContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(validationSchema),
+  });
 
   const [loading, setLoading] = useState(false);
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleFormSubmit = async (data) => {
     try {
       setLoading(true);
       const response = await axios.post(
         `http://localhost:4000/api/login/user`,
         {
-          email: email,
-          password: password,
+          email: data.email,
+          password: data.password,
         },
         {
           headers: {
@@ -34,7 +53,7 @@ const Login = () => {
       if (response.status === 200) {
         setLoading(false);
         localStorage.setItem("token", response.data.token);
-        navigate("/");
+        navigate("/list/products");
         getProfile();
         fetchProducts();
         toast.success("Login Success");
@@ -57,28 +76,35 @@ const Login = () => {
 
   return (
     <div className="sign-in__wrapper">
-      <Form className="shadow p-4 bg-white rounded" onSubmit={handleFormSubmit}>
+      <Form
+        className="shadow p-4 bg-white rounded"
+        onSubmit={handleSubmit(handleFormSubmit)}
+      >
         <div className="h4 mb-2 text-center">Sign In</div>
 
-        <Form.Group className="mb-2" controlId="username">
-          <Form.Label>Username</Form.Label>
+        <Form.Group className="mb-2" controlId="email">
+          <Form.Label>Email</Form.Label>
           <Form.Control
-            type="text"
-            value={email}
-            placeholder="Username"
-            onChange={(e) => setEmail(e.target.value)}
-            required
+            name="email"
+            isInvalid={errors.email}
+            {...register("email")}
+            placeholder="Email"
           />
+          <Form.Control.Feedback type="invalid">
+            {errors.email?.message}
+          </Form.Control.Feedback>
         </Form.Group>
         <Form.Group className="mb-2" controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
-            value={password}
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
+            isInvalid={errors.password}
+            {...register("password")}
+            placeholder="password"
           />
+          <Form.Control.Feedback type="invalid">
+            {errors.password?.message}
+          </Form.Control.Feedback>
         </Form.Group>
 
         {!loading ? (

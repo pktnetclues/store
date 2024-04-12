@@ -1,8 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
-import { FaCartPlus } from "react-icons/fa";
-
-import axios from "axios";
-import { Button } from "react-bootstrap";
+import React, { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import UpdateProduct from "./UpdateProduct";
 
