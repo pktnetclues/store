@@ -12,6 +12,7 @@ import { UserContextProvider } from "./Context/UserContext";
 import Profile from "./Components/Profile";
 import CreateProduct from "./Components/Products/CreateProduct";
 import ListProducts from "./Components/Products/ListProducts";
+import SendMail from "./Components/SendMail";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route exact path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/sendmail" element={<SendMail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/create/product" element={<CreateProduct />} />
           <Route path="/list/products" element={<ListProducts />} />
