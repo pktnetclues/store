@@ -10,6 +10,8 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
 
+  console.log(user);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     setUser({});
@@ -19,6 +21,14 @@ const Header = () => {
 
   useEffect(() => {
     checkTokenExpiration();
+
+    setInterval(() => {
+      checkTokenExpiration();
+    }, 60000);
+
+    return () => {
+      clearInterval();
+    };
   }, []);
 
   const checkTokenExpiration = () => {
@@ -30,7 +40,6 @@ const Header = () => {
 
     try {
       const decodedToken = jwtDecode(authToken);
-      console.log(decodedToken.exp, Math.floor(Date.now() / 1000));
 
       if (decodedToken.exp < Math.floor(Date.now() / 1000)) {
         handleLogout();
@@ -60,7 +69,7 @@ const Header = () => {
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <div className="d-flex gap-4">
-            {authToken ? (
+            {user.email ? (
               <div className="d-flex justify-content-center align-items-center gap-4">
                 <Link to="/create/product">
                   <Button variant="primary">Add Product</Button>

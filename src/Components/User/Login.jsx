@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { UserContext } from "../Context/UserContext";
+import { UserContext } from "../../Context/UserContext";
 import axios from "axios";
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -24,7 +24,7 @@ const validationSchema = yup.object().shape({
 
 const Login = () => {
   const navigate = useNavigate();
-  const { getProfile, fetchProducts } = useContext(UserContext);
+  const { getProfile } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -55,7 +55,6 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         navigate("/list/products");
         getProfile();
-        fetchProducts();
         toast.success("Login Success");
       }
     } catch (error) {

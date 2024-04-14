@@ -27,15 +27,6 @@ const validationSchema = yup.object().shape({
       }
       return false;
     })
-    .test("file", "Only images are allowed", (file) => {
-      const acceptedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
-
-      console.log(file[0]);
-      if (acceptedImageTypes.includes(file[0].type)) {
-        return true;
-      }
-      return false;
-    })
     .test("fileSize", "The file is too large", (file) => {
       if (file[0] && file[0].size < 10000000) {
         return true;
@@ -68,7 +59,6 @@ const Register = () => {
       profilePic: data.profilePic[0],
     };
 
-    // console.log(userData.profilePic[0]);
     setLoading(true);
     try {
       const response = await axios.post(
@@ -83,8 +73,10 @@ const Register = () => {
 
       if (response.status === 200) {
         setLoading(false);
-        navigate("/login");
-        toast.success("Registration Success");
+        navigate("/verify/user", { state: { email: data.email } });
+        toast.success(
+          "User registered successfully. Please verify your email."
+        );
       }
     } catch (error) {
       setLoading(false);
