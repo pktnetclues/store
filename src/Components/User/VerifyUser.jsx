@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import axios from "axios";
 import { useContext } from "react";
@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const errMess = {
-  message: "Please fill out the field",
+  message: "OTP Is required",
 };
 
 const validationSchema = yup.object().shape({
@@ -21,25 +21,32 @@ const validationSchema = yup.object().shape({
 const VerifyUser = () => {
   const { user } = useContext(UserContext);
 
-  console.log(user.verified);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
-  const email = location?.state?.email;
+  const email = location?.state?.email || user.email;
 
   useEffect(() => {
-    if (user.verified === 1) {
+    console.log(user.verified);
+    if (user && user.verified == 1) {
       navigate("/profile");
       toast.success("You are already verified");
+    } else {
+      sendOTP();
     }
-  }, [user.verified, navigate]);
+  }, []);
 
-  //   useEffect(() => {
-  //     if (!email) {
-  //       navigate("/register");
-  //     }
-  //   }, [email, navigate]);
+  const sendOTP = async () => {
+    const response = await axios.get(`http://localhost:4000/api/sendotp/user`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+    if (response.status == 200) {
+      toast.success("OTP Sent Syccessfully");
+    }
+  };
 
   const {
     register,
@@ -66,7 +73,7 @@ const VerifyUser = () => {
       if (response.status === 200) {
         setLoading(false);
         navigate("/login");
-        toast.success("OTP verified successfully. You can now login.");
+        toast.success("OTP verified successfully.");
       }
     } catch (error) {
       setLoading(false);
@@ -96,30 +103,36 @@ const VerifyUser = () => {
           An OTP has been sent to your email. Please enter it below:
         </p>
 
-        {/* OTP field */}
         <Form.Group className="mb-2" controlId="otp">
           <Form.Control
             type="text"
             name="otp"
             placeholder="Enter OTP"
-            // Add necessary props here
             {...register("otp")}
+            isInvalid={errors.otp}
           />
-          {errors.otp && (
-            <div className="invalid-feedback">{errors.otp.message}</div>
-          )}
+          <Form.Control.Feedback type="invalid">
+            {errors.otp?.message}
+          </Form.Control.Feedback>
         </Form.Group>
 
         {/* Submit Button */}
-        {!loading ? (
-          <Button className="w-100" variant="primary" type="submit">
-            Verify OTP
-          </Button>
-        ) : (
-          <Button className="w-100" variant="primary" type="submit" disabled>
-            Verifying OTP...
-          </Button>
-        )}
+        <div className="d-flex gap-2">
+          {!loading ? (
+            <Button className="w-100" variant="primary" type="submit">
+              Verify OTP
+            </Button>
+          ) : (
+            <Button className="w-100" variant="primary" type="submit" disabled>
+              Verifying OTP...
+            </Button>
+          )}
+          <Link to={"/profile"}>
+            <Button className="w-100" variant="primary">
+              Verify Later
+            </Button>
+          </Link>
+        </div>
       </Form>
     </div>
   );

@@ -48,7 +48,7 @@ const CreateProduct = () => {
   // Initialize formData
   const {
     register,
-    handleSubmit,
+    handleSubmit: handleProduct,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(ProductSchema),
@@ -132,7 +132,7 @@ const CreateProduct = () => {
       <Form
         name="form"
         className="shadow p-4 bg-white rounded"
-        onSubmit={handleSubmit(handleFormSubmit)}
+        onSubmit={handleProduct(handleFormSubmit)}
       >
         <Form.Group className="mb-2" controlId="productName">
           <Form.Label>Product Name</Form.Label>

@@ -1,7 +1,9 @@
 import React, { useContext, useEffect } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
+import verified from "../../assets/verified.png";
+import { Image, Button } from "react-bootstrap";
 
 const Profile = () => {
   const { user } = useContext(UserContext);
@@ -12,7 +14,7 @@ const Profile = () => {
     if (!authToken) {
       navigate("/login");
     }
-  }, [authToken, navigate]);
+  }, []);
 
   const profilePicPath = user ? user?.profilePic : null;
   const profilePic = profilePicPath
@@ -32,15 +34,31 @@ const Profile = () => {
     >
       <div className="d-flex justify-content-center align-items-center rounded bg-white">
         <div className="col-md-3 border-right">
-          <div className="d-flex flex-column align-items-center text-center p-3 py-5">
-            <img
-              className="rounded-circle mt-5"
-              width="150px"
-              src={profilePic}
-            />
+          <div className="d-flex flex-column align-items-center text-center p-3 py-2">
+            <Image roundedCircle width="120px" src={profilePic} />
+            {user.verified == 1 ? (
+              <span>
+                Verified
+                <Image src={verified} alt="Logo" width="20" roundedCircle />
+              </span>
+            ) : (
+              <>
+                <span>You are not verified</span>
+                <Link to={"/verify/user"}>
+                  <Button
+                    variant="ghost"
+                    className="bg-light text-primary"
+                    size="sm"
+                  >
+                    Verify Now
+                  </Button>
+                </Link>
+              </>
+            )}
             <span className="font-weight-bold">
               {user?.firstName} {user?.lastName}
             </span>
+
             <span className="text-black-50">{user?.email}</span>
             <span> </span>
           </div>

@@ -3,6 +3,7 @@ import { Navbar, Container, Button, Image } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import { UserContext } from "../Context/UserContext";
+import logo from "../assets/netclues_logo.png";
 
 import { toast } from "sonner";
 
@@ -10,11 +11,9 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(UserContext);
 
-  console.log(user);
-
   const handleLogout = () => {
     localStorage.removeItem("token");
-    setUser({});
+    setUser(null);
     toast.success("Logout Success");
     navigate("/login");
   };
@@ -59,17 +58,12 @@ const Header = () => {
     <Navbar fixed="top" className="bg-body-tertiary">
       <Container>
         <Link to="/">
-          <Image
-            src="https://dynamic.brandcrowd.com/asset/logo/230da536-f2f2-4479-8c0f-87ad3a0dc7e8/logo-search-grid-1x?logoTemplateVersion=2&v=638374669166830000&text=store"
-            alt="Logo"
-            width="50"
-            roundedCircle
-          />
+          <Image src={logo} alt="Logo" width="50" roundedCircle />
         </Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <div className="d-flex gap-4">
-            {user.email ? (
+            {user?.email ? (
               <div className="d-flex justify-content-center align-items-center gap-4">
                 <Link to="/create/product">
                   <Button variant="primary">Add Product</Button>
