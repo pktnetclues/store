@@ -44,15 +44,17 @@ const Profile = () => {
             ) : (
               <>
                 <span>You are not verified</span>
-                <Link to={"/verify/user"}>
-                  <Button
-                    variant="ghost"
-                    className="bg-light text-primary"
-                    size="sm"
-                  >
-                    Verify Now
-                  </Button>
-                </Link>
+
+                <Button
+                  variant="ghost"
+                  className="bg-light text-primary"
+                  size="sm"
+                  onClick={navigate("/verify/user", {
+                    state: { email: user?.email },
+                  })}
+                >
+                  Verify Now
+                </Button>
               </>
             )}
             <span className="font-weight-bold">

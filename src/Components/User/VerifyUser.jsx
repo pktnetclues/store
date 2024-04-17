@@ -25,7 +25,7 @@ const VerifyUser = () => {
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
-  const email = location?.state?.email || user.email;
+  const email = location?.state?.email;
 
   useEffect(() => {
     if (user && user?.verified == 1) {
@@ -113,22 +113,40 @@ const VerifyUser = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        {/* Submit Button */}
-        <div className="d-flex gap-2">
-          {!loading ? (
-            <Button className="w-100" variant="primary" type="submit">
-              Verify OTP
-            </Button>
-          ) : (
-            <Button className="w-100" variant="primary" type="submit" disabled>
-              Verifying OTP...
-            </Button>
-          )}
-          <Link to={"/profile"}>
-            <Button className="w-100" variant="primary">
-              Verify Later
-            </Button>
-          </Link>
+        <div className="d-flex flex-column gap-3 mt-3">
+          <div className="d-flex gap-3">
+            {!loading ? (
+              <>
+                <Button
+                  className="w-50"
+                  variant="secondary"
+                  onClick={user?.verified == 1 ? null : sendOTP}
+                >
+                  Send OTP
+                </Button>
+                <Button className="w-50" variant="primary" type="submit">
+                  Verify OTP
+                </Button>
+              </>
+            ) : (
+              <Button
+                className="w-100"
+                variant="primary"
+                type="submit"
+                disabled
+              >
+                Verifying OTP...
+              </Button>
+            )}
+          </div>
+
+          <div className="w-100">
+            <Link to={"/profile"}>
+              <Button className="w-100" variant="secondary">
+                Skip for now
+              </Button>
+            </Link>
+          </div>
         </div>
       </Form>
     </div>
