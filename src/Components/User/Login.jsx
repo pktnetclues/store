@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -24,7 +24,15 @@ const validationSchema = yup.object().shape({
 
 const Login = () => {
   const navigate = useNavigate();
-  const { getProfile } = useContext(UserContext);
+  const { getProfile, user } = useContext(UserContext);
+
+  useEffect(() => {
+    if (user && user?.email) {
+      navigate("/profile");
+      toast.success("You Are already LoggedIn");
+    }
+  });
+
   const {
     register,
     handleSubmit,

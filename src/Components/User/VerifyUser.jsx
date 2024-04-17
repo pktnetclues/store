@@ -28,14 +28,11 @@ const VerifyUser = () => {
   const email = location?.state?.email || user.email;
 
   useEffect(() => {
-    console.log(user.verified);
-    if (user && user.verified == 1) {
+    if (user && user?.verified == 1) {
       navigate("/profile");
       toast.success("You are already verified");
-    } else {
-      sendOTP();
     }
-  }, []);
+  });
 
   const sendOTP = async () => {
     const response = await axios.get(`http://localhost:4000/api/sendotp/user`, {

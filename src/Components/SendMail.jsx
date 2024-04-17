@@ -142,11 +142,11 @@ const SendMail = () => {
 
         {!loading ? (
           <Button className="w-100" variant="primary" type="submit">
-            Sign Up
+            Send
           </Button>
         ) : (
           <Button className="w-100" variant="primary" type="submit" disabled>
-            Signing Up...
+            Sending
           </Button>
         )}
       </Form>
